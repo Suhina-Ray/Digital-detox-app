@@ -236,3 +236,77 @@ audio {
   font-size: 2em;
   margin-top: 20px;
 }
+#chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  border: 2px solid #a6d608;
+  border-radius: 16px;
+  background: white;
+  font-family: sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+#chatbot-header {
+  background: #cae00d;
+  color: black;
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#chat-window {
+  padding: 10px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.chat {
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 12px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.user {
+  align-self: flex-end;
+  background: #e8f48c;
+}
+
+.bot {
+  align-self: flex-start;
+  background: #f0f0f0;
+}
+
+#user-input {
+  width: 70%;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+#chat-window button {
+  width: 25%;
+  padding: 6px;
+  border: none;
+  background: #9dc209;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#chat-window button:hover {
+  background: #a6d608;
+}

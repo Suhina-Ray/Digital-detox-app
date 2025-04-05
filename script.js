@@ -2,12 +2,14 @@ let timer;
 let timeLeft = 1500;
 let mode = "focus";
 let sessionCount = 0;
+let points = parseInt(localStorage.getItem("points")) || 0;
 
 const display = document.getElementById("timer-display");
 const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
 const sessionCounter = document.getElementById("sessionCount");
+const pointsDisplay = document.getElementById("pointsDisplay");
 
 const settingsModal = document.getElementById("settings-modal");
 const settingsBtn = document.getElementById("settings-btn");
@@ -28,6 +30,10 @@ function updateDisplay() {
     .padStart(2, "0")}`;
 }
 
+function updatePointsDisplay() {
+  pointsDisplay.textContent = `Points: ${points}`;
+}
+
 function setMode(newMode) {
   mode = newMode;
   timeLeft = durations[mode];
@@ -46,8 +52,15 @@ function startTimer() {
       clearInterval(timer);
       sessionCount++;
       sessionCounter.textContent = `Sessions Completed: ${sessionCount}`;
+
+      if (mode === "focus") {
+        points += 10; // Add 10 points for completing a focus session
+        localStorage.setItem("points", points);
+        updatePointsDisplay();
+      }
     }
   }, 1000);
+
   startBtn.disabled = true;
   pauseBtn.disabled = false;
   resetBtn.disabled = false;
@@ -96,6 +109,80 @@ saveSettingsBtn.onclick = () => {
 
   settingsModal.style.display = "none";
 };
+
+// Load tasks from localStorage when the page loads
+window.onload = function () {
+  loadTasks();
+  updatePointsDisplay();
+};
+
+// Add a new task
+function addTask() {
+  const taskInput = document.getElementById("taskInput");
+  const deadlineInput = document.getElementById("deadlineInput");
+
+  const taskText = taskInput.value.trim();
+  const deadline = deadlineInput.value;
+
+  if (taskText === "") {
+    alert("Please enter a task.");
+    return;
+  }
+
+  const task = {
+    text: taskText,
+    deadline: deadline,
+  };
+
+  // Save to localStorage
+  const tasks = getTasksFromStorage();
+  tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+  // Update UI
+  displayTask(task);
+
+  // Clear inputs
+  taskInput.value = "";
+  deadlineInput.value = "";
+}
+
+// Helper: get all tasks from localStorage
+function getTasksFromStorage() {
+  const stored = localStorage.getItem("tasks");
+  return stored ? JSON.parse(stored) : [];
+}
+// Check login
+const currentUser = localStorage.getItem("loggedInUser");
+if (!currentUser) {
+  window.location.href = "login.html"; // redirect if not logged in
+} else {
+  document.getElementById(
+    "welcomeUser"
+  ).textContent = `Welcome, ${currentUser}!`;
+}
+
+// Logout
+function logout() {
+  localStorage.removeItem("loggedInUser");
+  window.location.href = "login.html";
+}
+
+// Display a single task in the list
+function displayTask(task) {
+  const list = document.getElementById("taskList");
+  const li = document.createElement("li");
+  li.textContent = task.deadline
+    ? `${task.text} (Due: ${task.deadline})`
+    : task.text;
+  list.appendChild(li);
+}
+
+// Load and show all saved tasks
+function loadTasks() {
+  const tasks = getTasksFromStorage();
+  tasks.forEach(displayTask);
+}
 
 document.addEventListener("DOMContentLoaded", updateDisplay);
 startBtn.addEventListener("click", startTimer);

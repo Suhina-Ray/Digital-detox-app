@@ -61,6 +61,8 @@
     </style>
   </head>
   <body class="detox-page">
+    <script src="detox.js"></script>
+
     <div class="detox-container">
       <h1>Digital Detox</h1>
 
@@ -90,5 +92,13 @@
         audioPlayer.play();
       });
     </script>
+    <div id="chatbot-container">
+      <div id="chatbot-header">Need a break? Talk to me 😊</div>
+      <div id="chat-window">
+        <div id="chat-messages"></div>
+        <input type="text" id="user-input" placeholder="Type something..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
   </body>
 </html>
