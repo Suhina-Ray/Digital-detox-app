@@ -2,39 +2,128 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Digital Detox App</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Focus App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #focus-time {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      #feedback-rating {
+        margin: 10px 0;
+      }
+      select {
+        padding: 5px;
+        font-size: 16px;
+      }
+    </style>
   </head>
-  <body onload="fadeIn()">
-    <div id="tabs">
-      <button onclick="showTab('timerTab')">Focus Timer</button>
-      <button onclick="fadeOutToTasks()">Tasks</button>
+  <body>
+    <div class="container">
+      <h1>Welcome to the Study Focus App!</h1>
+
+      <!-- Start Focus Session Button -->
+      <button id="start-session">Start Focus Session</button>
+
+      <!-- Display Focus Time -->
+      <p id="focus-time"></p>
+
+      <!-- Pomodoro Timer -->
+      <button id="start-pomodoro">Start Pomodoro Timer</button>
+      <p id="pomodoro-time"></p>
+
+      <!-- Feedback Section -->
+      <h3>Rate Your Focus:</h3>
+      <select id="feedback-rating">
+        <option value="1">1 - Not Focused</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5 - Very Focused</option>
+      </select>
+
+      <!-- Submit Feedback Button -->
+      <button id="submit-feedback">Submit Feedback</button>
     </div>
 
-    <!-- Focus Timer Section -->
-    <div id="timerTab">
-      <h1>Digital Detox Focus Timer</h1>
-      <div id="modeButtons">
-        <button onclick="setMode('focus')">Focus</button>
-        <button onclick="setMode('short')">Short Break</button>
-        <button onclick="setMode('long')">Long Break</button>
-      </div>
-      <p id="mode">Focus</p>
-      <p id="timer">25:00</p>
-      <button id="startBtn">Start</button>
-      <button id="resetBtn">Reset</button>
-      <p id="sessionCount">Sessions Completed: 0</p>
-    </div>
+    <script>
+      // Handle start focus session click
+      document.getElementById("start-session").onclick = function () {
+        fetch("/start_session", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Display the focus time and the next recommended focus duration
+            document.getElementById(
+              "focus-time"
+            ).innerText = `You focused for ${data.focus_time.toFixed(
+              2
+            )} minutes. Next session will be for ${data.optimal_time} minutes.`;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      };
 
-    <!-- Task List Section (hidden, used if you want in same page) -->
-    <div id="taskTab" style="display: none">
-      <h2>Task List</h2>
-      <input type="text" id="taskInput" placeholder="Task Name" />
-      <input type="datetime-local" id="deadlineInput" />
-      <button onclick="addTask()">Add Task</button>
-      <ul id="taskList"></ul>
-    </div>
+      // Handle start Pomodoro click
+      document.getElementById("start-pomodoro").onclick = function () {
+        fetch("/start_pomodoro", {
+          method: "POST",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Display Pomodoro session time
+            document.getElementById(
+              "pomodoro-time"
+            ).innerText = `Pomodoro session completed! Take a break for ${data.break_duration} minutes.`;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      };
 
-    <script src="script.js"></script>
+      // Handle feedback submission
+      document.getElementById("submit-feedback").onclick = function () {
+        const rating = document.getElementById("feedback-rating").value;
+
+        fetch("/feedback", {
+          method: "POST",
+          body: new URLSearchParams({
+            rating: rating,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      };
+    </script>
   </body>
 </html>

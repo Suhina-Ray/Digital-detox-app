@@ -1,3 +1,4 @@
+// ========== TIMER SETTINGS ==========
 let focusTime = 25 * 60;
 let shortBreakTime = 5 * 60;
 let longBreakTime = 15 * 60;
@@ -7,17 +8,34 @@ let sessionCount = 0;
 let isFocus = true;
 let interval;
 let timerRunning = false;
-if (Notification.permission !== "granted") {
-  Notification.requestPermission();
-}
 
+// ========== GAMIFICATION VALUES ==========
+let xp = parseInt(localStorage.getItem("xp")) || 0;
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+let lastActiveDate = localStorage.getItem("lastActiveDate") || "";
+let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+
+// ========== DOM ELEMENTS ==========
 const timerDisplay = document.getElementById("timer");
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
 const modeDisplay = document.getElementById("mode");
 const sessionDisplay = document.getElementById("sessionCount");
+const xpDisplay = document.getElementById("xp");
+const levelDisplay = document.getElementById("level");
+const coinsDisplay = document.getElementById("coins");
+const streakDisplay = document.getElementById("streak");
+const achievementsDisplay = document.getElementById("achievements");
 
-// Show current time in MM:SS format
+// ========== INIT ==========
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+updateXPAndLevel();
+displayAchievements();
+
+// ========== TIMER FUNCTIONS ==========
 function updateTimerDisplay() {
   const minutes = Math.floor(currentTime / 60);
   const seconds = currentTime % 60;
@@ -26,7 +44,6 @@ function updateTimerDisplay() {
     .padStart(2, "0")}`;
 }
 
-// Start the countdown timer
 function startTimer() {
   if (timerRunning) return;
 
@@ -39,22 +56,20 @@ function startTimer() {
       clearInterval(interval);
       timerRunning = false;
 
-      // Show notification and play sound
       sendNotification();
       playSound();
 
-      // Session complete, switch mode
       if (isFocus) {
         sessionCount++;
+        xp += 10;
+        coins += 5;
+        updateXPAndLevel();
         sessionDisplay.textContent = `Sessions Completed: ${sessionCount}`;
         isFocus = false;
-        if (sessionCount % 4 === 0) {
-          currentTime = longBreakTime;
-          modeDisplay.textContent = "Long Break";
-        } else {
-          currentTime = shortBreakTime;
-          modeDisplay.textContent = "Short Break";
-        }
+
+        currentTime = sessionCount % 4 === 0 ? longBreakTime : shortBreakTime;
+        modeDisplay.textContent =
+          sessionCount % 4 === 0 ? "Long Break" : "Short Break";
       } else {
         isFocus = true;
         currentTime = focusTime;
@@ -62,25 +77,11 @@ function startTimer() {
       }
 
       updateTimerDisplay();
-      startTimer(); // Auto-start next session
+      startTimer();
     }
   }, 1000);
 }
-function sendNotification() {
-  if (Notification.permission === "granted") {
-    new Notification("⏰ Timer Finished!", {
-      body: isFocus ? "Time for a break!" : "Back to work!",
-      icon: "icon.png", // Optional - add icon file in your project folder
-    });
-  }
-}
 
-function playSound() {
-  const audio = new Audio("alarm.mp3"); // Add a sound file named 'alarm.mp3' in your folder
-  audio.play();
-}
-
-// Reset timer to initial state
 function resetTimer() {
   clearInterval(interval);
   timerRunning = false;
@@ -92,7 +93,6 @@ function resetTimer() {
   updateTimerDisplay();
 }
 
-// Manual mode switch (Focus, Short Break, Long Break)
 function setMode(mode) {
   clearInterval(interval);
   timerRunning = false;
@@ -114,53 +114,88 @@ function setMode(mode) {
   updateTimerDisplay();
 }
 
+// ========== GAMIFICATION ==========
+function updateXPAndLevel() {
+  localStorage.setItem("xp", xp);
+  xpDisplay.textContent = `XP: ${xp}`;
+  const level = Math.floor(xp / 100) + 1;
+  levelDisplay.textContent = `Level: ${level}`;
+
+  localStorage.setItem("coins", coins);
+  coinsDisplay.textContent = `Coins: ${coins}`;
+
+  updateStreak();
+  checkAchievements();
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+
+  if (lastActiveDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (lastActiveDate === yesterday) {
+      streak++;
+    } else {
+      streak = 1;
+    }
+
+    lastActiveDate = today;
+    localStorage.setItem("lastActiveDate", lastActiveDate);
+    localStorage.setItem("streak", streak);
+  }
+
+  streakDisplay.textContent = `🔥 Streak: ${streak} day${
+    streak > 1 ? "s" : ""
+  }`;
+}
+
+function checkAchievements() {
+  const newAchievements = [];
+
+  if (xp >= 100 && !achievements.includes("Beginner"))
+    newAchievements.push("Beginner");
+  if (xp >= 500 && !achievements.includes("Focused Learner"))
+    newAchievements.push("Focused Learner");
+  if (streak >= 7 && !achievements.includes("1 Week Streak"))
+    newAchievements.push("1 Week Streak");
+
+  if (newAchievements.length > 0) {
+    achievements = [...achievements, ...newAchievements];
+    localStorage.setItem("achievements", JSON.stringify(achievements));
+    displayAchievements();
+  }
+}
+
+function displayAchievements() {
+  achievementsDisplay.textContent = `🏆 Achievements: ${
+    achievements.length ? achievements.join(", ") : "None yet"
+  }`;
+}
+
+// ========== NOTIFICATION / SOUND ==========
+function sendNotification() {
+  if (Notification.permission === "granted") {
+    new Notification("⏰ Timer Finished!", {
+      body: isFocus ? "Time for a break!" : "Back to work!",
+      icon: "icon.png",
+    });
+  }
+}
+
+function playSound() {
+  const audio = new Audio("alarm.mp3");
+  audio.play();
+}
+
+// ========== EVENT LISTENERS ==========
 startBtn.addEventListener("click", startTimer);
 resetBtn.addEventListener("click", resetTimer);
+
+// ========== UI HELPERS ==========
 function showTab(tabId) {
   document.getElementById("timerTab").style.display = "none";
   document.getElementById("taskTab").style.display = "none";
   document.getElementById(tabId).style.display = "block";
-}
-
-const taskList = [];
-
-function addTask() {
-  const taskName = document.getElementById("taskInput").value;
-  const deadlineInput = document.getElementById("deadlineInput").value;
-  if (!taskName || !deadlineInput)
-    return alert("Please enter both task and deadline.");
-
-  const deadline = new Date(deadlineInput);
-  const task = { name: taskName, deadline };
-  taskList.push(task);
-
-  displayTasks();
-  checkDeadlines();
-  document.getElementById("taskInput").value = "";
-  document.getElementById("deadlineInput").value = "";
-}
-
-function displayTasks() {
-  const list = document.getElementById("taskList");
-  list.innerHTML = "";
-  taskList.forEach((task, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${task.name} — Due: ${task.deadline.toLocaleString()}`;
-    list.appendChild(li);
-  });
-}
-
-function checkDeadlines() {
-  setInterval(() => {
-    const now = new Date();
-    taskList.forEach((task) => {
-      const timeDiff = task.deadline - now;
-      if (timeDiff <= 10 * 60 * 1000 && timeDiff > 0 && !task.reminded) {
-        alert(`Reminder: Your task "${task.name}" is due soon!`);
-        task.reminded = true; // So it doesn't repeat
-      }
-    });
-  }, 60000); // check every minute
 }
 
 function fadeOutToTasks() {

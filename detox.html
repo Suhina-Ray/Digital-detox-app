@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Digital Detox</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body.detox-page {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(to bottom right, #f5f0e1, #d8c3a5);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .detox-container {
+        background: #fffaf3;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+      }
+
+      h1 {
+        color: #5e503f;
+        margin-bottom: 20px;
+      }
+
+      select,
+      audio {
+        margin: 15px 0;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        width: 100%;
+      }
+
+      #quote {
+        font-style: italic;
+        color: #7a6e57;
+        margin-top: 20px;
+      }
+
+      a {
+        display: inline-block;
+        margin-top: 25px;
+        color: #8b5e3c;
+        text-decoration: none;
+        font-weight: bold;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body class="detox-page">
+    <div class="detox-container">
+      <h1>Digital Detox</h1>
+
+      <select id="musicSelect">
+        <option value="lofi.mp3">Lo-Fi Beats</option>
+        <option value="nature.mp3">Nature Sounds</option>
+        <option value="focus.mp3">Focus Ambient</option>
+      </select>
+
+      <audio id="audioPlayer" controls autoplay>
+        <source src="lofi.mp3" type="audio/mp3" />
+        Your browser does not support the audio element.
+      </audio>
+
+      <p id="quote">"Take a deep breath. Disconnect to reconnect."</p>
+
+      <a href="index.html">← Back to Timer</a>
+    </div>
+
+    <script>
+      const musicSelect = document.getElementById("musicSelect");
+      const audioPlayer = document.getElementById("audioPlayer");
+
+      musicSelect.addEventListener("change", function () {
+        const selectedTrack = musicSelect.value;
+        audioPlayer.src = selectedTrack;
+        audioPlayer.play();
+      });
+    </script>
+  </body>
+</html>
