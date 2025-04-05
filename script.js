@@ -9,7 +9,7 @@ const startBtn = document.getElementById("startBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const resetBtn = document.getElementById("resetBtn");
 const sessionCounter = document.getElementById("sessionCount");
-const pointsDisplay = document.getElementById("pointsDisplay");
+const pointDisplay = document.getElementById("pointDisplay");
 
 const settingsModal = document.getElementById("settings-modal");
 const settingsBtn = document.getElementById("settings-btn");
@@ -31,7 +31,8 @@ function updateDisplay() {
 }
 
 function updatePointsDisplay() {
-  pointsDisplay.textContent = `Points: ${points}`;
+  pointDisplay.textContent = points;
+  localStorage.setItem("points", points);
 }
 
 function setMode(newMode) {
@@ -52,15 +53,12 @@ function startTimer() {
       clearInterval(timer);
       sessionCount++;
       sessionCounter.textContent = `Sessions Completed: ${sessionCount}`;
-
       if (mode === "focus") {
-        points += 10; // Add 10 points for completing a focus session
-        localStorage.setItem("points", points);
+        points += 10;
         updatePointsDisplay();
       }
     }
   }, 1000);
-
   startBtn.disabled = true;
   pauseBtn.disabled = false;
   resetBtn.disabled = false;
@@ -86,9 +84,10 @@ function showTab(tabId) {
     tabId === "timerTab" ? "block" : "none";
   document.getElementById("taskTab").style.display =
     tabId === "taskTab" ? "block" : "none";
+  document.getElementById("themeTab").style.display =
+    tabId === "themeTab" ? "block" : "none";
 }
 
-// Settings Modal Events
 settingsBtn.onclick = () => (settingsModal.style.display = "block");
 closeBtn.onclick = () => (settingsModal.style.display = "none");
 window.onclick = (e) => {
@@ -104,19 +103,18 @@ saveSettingsBtn.onclick = () => {
     durations.focus = focus * 60;
     durations.shortBreak = short * 60;
     durations.longBreak = long * 60;
-    setMode(mode); // reset timer to new duration
+    setMode(mode);
   }
 
   settingsModal.style.display = "none";
 };
 
-// Load tasks from localStorage when the page loads
 window.onload = function () {
   loadTasks();
+  updateDisplay();
   updatePointsDisplay();
 };
 
-// Add a new task
 function addTask() {
   const taskInput = document.getElementById("taskInput");
   const deadlineInput = document.getElementById("deadlineInput");
@@ -134,57 +132,75 @@ function addTask() {
     deadline: deadline,
   };
 
-  // Save to localStorage
   const tasks = getTasksFromStorage();
   tasks.push(task);
   localStorage.setItem("tasks", JSON.stringify(tasks));
-
-  // Update UI
   displayTask(task);
 
-  // Clear inputs
   taskInput.value = "";
   deadlineInput.value = "";
 }
 
-// Helper: get all tasks from localStorage
 function getTasksFromStorage() {
   const stored = localStorage.getItem("tasks");
   return stored ? JSON.parse(stored) : [];
 }
-// Check login
-const currentUser = localStorage.getItem("loggedInUser");
-if (!currentUser) {
-  window.location.href = "login.html"; // redirect if not logged in
-} else {
-  document.getElementById(
-    "welcomeUser"
-  ).textContent = `Welcome, ${currentUser}!`;
-}
 
-// Logout
-function logout() {
-  localStorage.removeItem("loggedInUser");
-  window.location.href = "login.html";
-}
-
-// Display a single task in the list
-function displayTask(task) {
+function displayTask(task, index) {
   const list = document.getElementById("taskList");
   const li = document.createElement("li");
   li.textContent = task.deadline
     ? `${task.text} (Due: ${task.deadline})`
     : task.text;
+
+  // Create Completed button
+  const completeBtn = document.createElement("button");
+  completeBtn.textContent = "Completed";
+  completeBtn.className = "complete-btn";
+  completeBtn.onclick = () => {
+    li.style.textDecoration = "line-through";
+    completeBtn.disabled = true;
+  };
+
+  li.appendChild(completeBtn);
   list.appendChild(li);
 }
 
-// Load and show all saved tasks
 function loadTasks() {
   const tasks = getTasksFromStorage();
-  tasks.forEach(displayTask);
+  document.getElementById("taskList").innerHTML = "";
+  tasks.forEach((task, index) => displayTask(task, index));
 }
 
 document.addEventListener("DOMContentLoaded", updateDisplay);
 startBtn.addEventListener("click", startTimer);
 pauseBtn.addEventListener("click", pauseTimer);
 resetBtn.addEventListener("click", resetTimer);
+
+function unlockTheme(themeName) {
+  const unlockedThemes =
+    JSON.parse(localStorage.getItem("unlockedThemes")) || [];
+  if (!unlockedThemes.includes(themeName)) {
+    if (points >= 10) {
+      points -= 10;
+      unlockedThemes.push(themeName);
+      localStorage.setItem("unlockedThemes", JSON.stringify(unlockedThemes));
+      updatePointsDisplay();
+      alert(`${themeName} theme unlocked!`);
+    } else {
+      alert("Not enough points to unlock this theme.");
+    }
+  } else {
+    alert("Theme already unlocked.");
+  }
+}
+
+function applyTheme(themeName) {
+  const unlockedThemes =
+    JSON.parse(localStorage.getItem("unlockedThemes")) || [];
+  if (themeName === "default" || unlockedThemes.includes(themeName)) {
+    document.body.className = themeName;
+  } else {
+    alert("You need to unlock this theme first.");
+  }
+}

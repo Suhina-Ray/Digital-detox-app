@@ -1,33 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  />
+
   <head>
     <meta charset="UTF-8" />
     <title>Digital Detox App</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div style="text-align: right; margin: 10px">
-      <span id="welcomeUser"></span>
-      <button onclick="logout()">Logout</button>
-    </div>
-    <div style="text-align: right; margin: 10px">
-      <span id="welcomeUser"></span>
-      <button onclick="logout()">Logout</button>
-    </div>
-
     <a href="detox.html" class="nav-button">Go to Detox Page</a>
 
     <div id="tabs">
       <button onclick="showTab('timerTab')">Focus Timer</button>
       <button onclick="showTab('taskTab')">Tasks</button>
+      <button onclick="showTab('themeTab')">Themes</button>
     </div>
 
     <!-- Focus Timer Section -->
     <div id="timerTab">
       <h1>Digital Detox Focus Timer</h1>
-      <div id="pointsDisplay">Points: 0</div>
-      <!-- 💥 Points shown here -->
-
       <div id="timer-display">25:00</div>
 
       <div id="modeButtons">
@@ -43,7 +37,6 @@
       </div>
 
       <p id="sessionCount">Sessions Completed: 0</p>
-
       <button id="settings-btn">⚙️</button>
 
       <!-- Settings Modal -->
@@ -69,6 +62,22 @@
       <input type="datetime-local" id="deadlineInput" />
       <button onclick="addTask()">Add Task</button>
       <ul id="taskList"></ul>
+    </div>
+
+    <!-- Theme Store Section -->
+    <div id="themeTab" style="display: none">
+      <h2>Theme Store</h2>
+      <p>Points: <span id="pointDisplay">0</span></p>
+      <button onclick="unlockTheme('ocean')">
+        Unlock Ocean Theme (10 points)
+      </button>
+      <button onclick="unlockTheme('sunset')">
+        Unlock Sunset Theme (10 points)
+      </button>
+      <h3>Apply Theme</h3>
+      <button onclick="applyTheme('default')">Default</button>
+      <button onclick="applyTheme('ocean')">Ocean</button>
+      <button onclick="applyTheme('sunset')">Sunset</button>
     </div>
 
     <script src="script.js"></script>
