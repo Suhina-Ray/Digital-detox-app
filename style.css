@@ -1,83 +1,238 @@
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f0e1;
+  font-family: "Segoe UI", sans-serif;
+  color: #4e342e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
   text-align: center;
+  padding: 20px;
+
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
   background-image: url("study.jpg");
   background-size: cover;
   background-position: center;
-  margin: 0;
-  padding: 0;
-  color: white;
-}
-
-.container {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 30px;
-  border-radius: 20px;
-  margin: 60px auto;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  background-repeat: no-repeat;
+  height: 100vh;
+  color: #3e2f1c; /* Adjust text color for visibility */
 }
 
 h1 {
+  font-size: 2.5rem;
   margin-bottom: 20px;
-  font-size: 2.2em;
+}
+
+#mode {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #6d4c41;
 }
 
 #timer {
-  font-size: 3.5em;
+  font-size: 64px;
+  font-weight: bold;
   margin: 20px 0;
+  color: #6d4c41;
 }
 
 button {
-  padding: 12px 24px;
-  font-size: 1em;
+  padding: 10px 25px;
   margin: 10px;
+  font-size: 16px;
+  background-color: #a1887f;
+  color: white;
   border: none;
   border-radius: 10px;
-  background-color: #af4343;
-  color: white;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-  background-color: #d63031;
+  background-color: #8d6e63;
 }
 
-#mode,
 #sessionCount {
-  font-size: 1.2em;
-  margin-top: 10px;
+  margin-top: 20px;
+  font-size: 1rem;
+}
+#modeButtons button {
+  background-color: #bcaaa4;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  margin: 5px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.stats {
+#modeButtons button:hover {
+  background-color: #8d6e63;
+}
+#tabs button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  background-color: #a77b50;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#tabs button:hover {
+  background-color: #8b5e3c;
+}
+
+#taskTab input {
+  margin: 5px;
+  padding: 8px;
+}
+body {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+body.fade-out {
+  opacity: 0;
+}
+/* General styling */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fdf6ec;
+  margin: 0;
+  padding: 0;
+  color: #3e2f1c;
+}
+
+/* Tab buttons */
+#tabs {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  padding: 1rem;
+  background-color: #d9c3a7;
+}
+
+#tabs button {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: #8b6f47;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#tabs button:hover {
+  background-color: #a9845d;
+}
+
+/* Task Section */
+#taskTab {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff6e9;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#taskTab h2 {
+  text-align: center;
+  color: #5b4225;
+  margin-bottom: 20px;
+}
+
+#taskInput,
+#deadlineInput {
+  width: calc(50% - 12px);
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+#taskTab button {
+  padding: 10px 15px;
+  margin-top: 10px;
+  background-color: #a9845d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#taskTab button:hover {
+  background-color: #8b6f47;
+}
+
+#taskList {
+  list-style-type: none;
+  padding: 0;
   margin-top: 20px;
 }
 
-.stat-box {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 10px 15px;
-  border-radius: 10px;
-  min-width: 100px;
-  font-size: 1em;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+#taskList li {
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding: 12px;
+  border-left: 5px solid #c9a46a;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.detox-page {
+  background: linear-gradient(to top right, #b89b82, #f2e5d5);
+  font-family: "Georgia", serif;
+  color: #3e2f1c;
+  text-align: center;
+  padding: 40px;
+  min-height: 100vh;
 }
 
-.fade-out {
-  opacity: 0;
-  transition: opacity 0.5s ease-out;
+.detox-container {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+.nav-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #a67b5b;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
-input,
-select {
-  padding: 8px;
-  border-radius: 5px;
-  border: none;
-  margin: 5px;
-  font-size: 1em;
+.nav-button:hover {
+  background-color: #8b5e3c;
+}
+
+select,
+audio {
+  margin: 20px 0;
+  padding: 10px;
+  width: 100%;
+}
+#timer-setup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#timer-display {
+  font-size: 2em;
+  margin-top: 20px;
 }
