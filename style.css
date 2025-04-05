@@ -64,3 +64,29 @@ button:hover {
 #modeButtons button:hover {
   background-color: #8d6e63;
 }
+#tabs button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  background-color: #a77b50;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#tabs button:hover {
+  background-color: #8b5e3c;
+}
+
+#taskTab input {
+  margin: 5px;
+  padding: 8px;
+}
+body {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+body.fade-out {
+  opacity: 0;
+}

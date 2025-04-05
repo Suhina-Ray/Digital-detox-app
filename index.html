@@ -5,22 +5,35 @@
     <title>Digital Detox App</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <h1>Digital Detox Focus Timer</h1>
-
-    <div id="modeButtons">
-      <button onclick="setMode('focus')">Focus</button>
-      <button onclick="setMode('short')">Short Break</button>
-      <button onclick="setMode('long')">Long Break</button>
+  <body onload="fadeIn()">
+    <div id="tabs">
+      <button onclick="showTab('timerTab')">Focus Timer</button>
+      <button onclick="fadeOutToTasks()">Tasks</button>
     </div>
 
-    <p id="mode">Focus</p>
-    <p id="timer">25:00</p>
+    <!-- Focus Timer Section -->
+    <div id="timerTab">
+      <h1>Digital Detox Focus Timer</h1>
+      <div id="modeButtons">
+        <button onclick="setMode('focus')">Focus</button>
+        <button onclick="setMode('short')">Short Break</button>
+        <button onclick="setMode('long')">Long Break</button>
+      </div>
+      <p id="mode">Focus</p>
+      <p id="timer">25:00</p>
+      <button id="startBtn">Start</button>
+      <button id="resetBtn">Reset</button>
+      <p id="sessionCount">Sessions Completed: 0</p>
+    </div>
 
-    <button id="startBtn">Start</button>
-    <button id="resetBtn">Reset</button>
-
-    <p id="sessionCount">Sessions Completed: 0</p>
+    <!-- Task List Section (hidden, used if you want in same page) -->
+    <div id="taskTab" style="display: none">
+      <h2>Task List</h2>
+      <input type="text" id="taskInput" placeholder="Task Name" />
+      <input type="datetime-local" id="deadlineInput" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+    </div>
 
     <script src="script.js"></script>
   </body>
